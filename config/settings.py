@@ -39,9 +39,13 @@ INSTALLED_APPS = [
 
     "allauth",
     "allauth.account",
-    
+
     "common",
     "users",
+
+    # 3erd party PKGs
+    "crispy_forms",
+    "crispy_bootstrap5",
 ]
 
 MIDDLEWARE = [
@@ -145,3 +149,6 @@ ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = "email"
 
 LOGIN_URL = "/accounts/login/"
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
