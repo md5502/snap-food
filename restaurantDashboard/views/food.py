@@ -157,3 +157,25 @@ def food_comment_dislike_view(request, comment_pk):
     comment.dislike_count += 1
     comment.save()
     return redirect("restaurant_dashboard:food_detail", pk=restaurant_pk)
+
+
+
+@login_required(login_url=LOGIN_URL)
+def food_comment_reply_view(request, parent_comment_pk):
+    parent_comment = get_object_or_404(FoodComment, pk=parent_comment_pk)
+    if request.method == "POST":
+        text_replay = request.POST.get("reply_text", "").strip()
+        if not text_replay:
+            messages.error(request, "Reply text cannot be empty.")
+            return redirect("restaurant_dashboard:detail_restaurant", pk=parent_comment.restaurant.pk)
+
+        FoodComment.objects.create(
+            user=request.user,
+            text=text_replay,
+            restaurant=parent_comment.restaurant,  # Parent's restaurant is used
+            parent=parent_comment,  # Set parent comment
+        )
+        messages.success(request, "Your reply has been added.")
+        return redirect("restaurant_dashboard:detail_restaurant", pk=parent_comment.restaurant.pk)
+    messages.error(request, "Invalid request method.")
+    return redirect("restaurant_dashboard:detail_restaurant", pk=parent_comment.restaurant.pk)

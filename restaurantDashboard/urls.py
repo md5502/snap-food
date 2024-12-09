@@ -11,6 +11,7 @@ from .views.food import (
     FoodUpdateView,
     food_comment_dislike_view,
     food_comment_like_view,
+    food_comment_reply_view,
 )
 from .views.menu import (
     MenuCreateView,
@@ -30,6 +31,7 @@ from .views.restaurant import (
     RestaurantUpdateView,
     restaurant_comment_dislike_view,
     restaurant_comment_like_view,
+    restaurant_comment_reply_view,
 )
 
 app_name = "restaurant_dashboard"
@@ -46,6 +48,7 @@ urlpatterns = [
     path("comment/<uuid:pk>/delete/", RestaurantCommentDeleteView.as_view(), name="restaurant_comment_delete"),
     path("comment/<uuid:comment_pk>/like/", restaurant_comment_like_view, name="restaurant_comment_like"),
     path("comment/<uuid:comment_pk>/dislike/", restaurant_comment_dislike_view, name="restaurant_comment_dislike"),
+    path("comment/<uuid:parent_comment_pk>/replay/", restaurant_comment_reply_view, name="restaurant_comment_reply"),
 
 
 
@@ -60,6 +63,7 @@ urlpatterns = [
     path("food/comment/<uuid:pk>/delete/", FoodCommentDeleteView.as_view(), name="food_comment_delete"),
     path("food/comment/<uuid:comment_pk>/like/", food_comment_like_view, name="food_comment_like"),
     path("food/comment/<uuid:comment_pk>/dislike/", food_comment_dislike_view, name="food_comment_dislike"),
+    path("food/comment/<uuid:parent_comment_pk>/replay/", food_comment_reply_view, name="food_comment_reply"),
 
     path("menus/<uuid:restaurant_id>", MenuListView.as_view(), name="menu_list"),
     path("menu/create/<uuid:restaurant_id>", MenuCreateView.as_view(), name="menu_create"),
