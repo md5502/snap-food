@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>delete comment</title>
+</head>
+<body>
+    <form action="{% url 'restaurant_dashboard:food_comment_delete' pk=object.pk %}" method="post">
+        <h2>do you want to delete the comment are you sure about that</h2>
+        {% csrf_token %}
+        {{object.text}}
+
+        <button type="submit">delete</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{restaurant.name}}</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Base Styling */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f8f9fa;
+            padding: 20px;
+            color: #333;
+        }
+
+        /* Header Section */
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        /* Restaurant Info Section */
+        .restaurant-details {
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            max-width: 800px;
+        }
+
+        .restaurant-details img {
+            max-width: 150px;
+            border-radius: 8px;
+            margin-right: 15px;
+            vertical-align: middle;
+        }
+
+        .restaurant-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .restaurant-info p {
+            margin: 5px 0;
+        }
+
+        /* Links Styling */
+        a {
+            text-decoration: none;
+            color: #007bff;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #0056b3;
+        }
+
+        /* Action Links */
+        .actions {
+            margin-top: 10px;
+        }
+
+        .actions a {
+            margin-right: 15px;
+        }
+
+        /* Comments Section */
+        .comments-section {
+            background-color: #fff;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+        }
+
+        .comments-section h2 {
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        form {
+            margin-bottom: 15px;
+        }
+
+        /* Comment List */
+        ul {
+            list-style: none;
+            padding: 10px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        li a {
+            margin: 0 5px;
+            color: #007bff;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .restaurant-info {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .restaurant-details img {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Restaurant Info Section -->
+    <div class="restaurant-details">
+        <div class="restaurant-info">
+            {% if restaurant.logo %}
+                <img src="{{ restaurant.logo.url }}" alt="Restaurant Logo">
+            {% endif %}
+            <div>
+                <h1>{{ restaurant.name }}</h1>
+                <p><strong>Description:</strong> {{ restaurant.description }}</p>
+                <p><strong>Owner:</strong> {{ restaurant.owner.profile.first_name }} {{ restaurant.owner.profile.last_name }}</p>
+                <p><strong>Address:</strong> {{ restaurant.address }}</p>
+                <p><strong>Call Number:</strong> {{ restaurant.call_number }}</p>
+                <p><strong>Rate:</strong> {{ restaurant.rate }}</p>
+                <p><strong>Opening Time:</strong> {{ restaurant.time_to_open }}</p>
+                <p><strong>Closing Time:</strong> {{ restaurant.time_to_close }}</p>
+            </div>
+        </div>
+
+        <!-- Action Links -->
+        {% if request.user == restaurant.owner %}
+            <div class="actions">
+                <a href="{% url 'restaurant_dashboard:update_restaurant' pk=restaurant.pk %}">Update</a>
+                <a href="{% url 'restaurant_dashboard:delete_restaurant' pk=restaurant.pk %}">Delete</a>
+            </div>
+        {% endif %}
+
+        <!-- Navigation Links -->
+        <div class="actions">
+            <a href="{% url 'restaurant_dashboard:food_list' restaurant_id=restaurant.pk %}">View Foods</a>
+            <a href="{% url 'restaurant_dashboard:menu_list' restaurant_id=restaurant.pk %}">View Menus</a>
+        </div>
+    </div>
+
+    <!-- Comments Section -->
+    <div class="comments-section">
+        <h2>Comments</h2>
+        <form method="post" action="{% url 'restaurant_dashboard:restaurant_comment_create' pk=obj.pk %}">
+            {% csrf_token %}
+            {{ comment_form.as_p }}
+            <button type="submit">Add Comment</button>
+        </form>
+
+        <ul>
+            {% for comment in comments %}
+                <li>
+                    <div>
+                        <strong>{{ comment.user.email }}</strong>: {{ comment.text }}
+                    </div>
+                    <div>
+                        {% if comment.user == request.user %}
+                            <a href="{% url 'restaurant_dashboard:restaurant_comment_update' pk=comment.pk %}">Edit</a>
+                            <a href="{% url 'restaurant_dashboard:restaurant_comment_delete' pk=comment.pk %}">Delete</a>
+                        {% endif %}
+                        <a href="{% url 'restaurant_dashboard:restaurant_comment_like' comment_pk=comment.pk %}">Like ({{ comment.like_count }})</a>
+                        <a href="{% url 'restaurant_dashboard:restaurant_comment_dislike' comment_pk=comment.pk %}">Dislike ({{ comment.dislike_count }})</a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+
+</html>

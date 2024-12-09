@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{food.name}}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        h2 {
+            color: #444;
+        }
+
+        p {
+            margin: 5px 0;
+        }
+
+        a {
+            color: #007BFF;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .comment-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .comment-list li {
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+
+        .comment-list li strong {
+            color: #555;
+        }
+
+        .form-container {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+
+        button {
+            padding: 8px 12px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .action-links a {
+            margin-right: 15px;
+        }
+
+        .rate-info {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+
+    <p class="rate-info">{{food.name}}</p>
+    <p>{{food.image}}</p>
+    <p>Count: {{food.count}}</p>
+    <p>Rate: {{food.rate}}</p>
+    <p>Discount: {{food.discount}}</p>
+    {% if request.user == food.restaurant.owner %}
+    <div class="action-links">
+        <a href="{% url 'restaurant_dashboard:food_update' pk=food.pk %}">Update</a>
+        <a href="{% url 'restaurant_dashboard:food_delete' pk=food.pk %}">Delete</a>
+    </div>
+    {% endif %}
+
+    <h2>Comments</h2>
+    <div class="form-container">
+        <form method="post" action="{% url 'restaurant_dashboard:food_comment_create' pk=obj.pk %}">
+            {% csrf_token %}
+            {{ food_comment_form.as_p }}
+            <button type="submit">Add Comment</button>
+        </form>
+    </div>
+
+    <ul class="comment-list">
+        {% for comment in comments %}
+            <li>
+                <strong>{{ comment.user.email }}</strong>: {{ comment.text }}
+                <div class="action-links">
+                    {% if comment.user == request.user %}
+                        <a href="{% url 'restaurant_dashboard:food_comment_update' pk=comment.pk %}">Edit</a>
+                        <a href="{% url 'restaurant_dashboard:food_comment_delete' pk=comment.pk %}">Delete</a>
+                    {% endif %}
+                    <a href="{% url 'restaurant_dashboard:food_comment_like' comment_pk=comment.pk %}">Like</a>
+                    <a href="{% url 'restaurant_dashboard:food_comment_dislike' comment_pk=comment.pk %}">Dislike</a>
+                </div>
+                Likes: {{comment.like_count}} | Dislikes: {{comment.dislike_count}}
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
