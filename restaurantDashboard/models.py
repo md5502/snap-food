@@ -1,4 +1,3 @@
-
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
@@ -58,7 +57,7 @@ class Food(BaseModel):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name="foods")
 
     def clean(self):
-        if self.discount <=  0  and self.discount >= 99:  # noqa: PLR2004
+        if self.discount <= 0 and self.discount >= 99:  # noqa: PLR2004
             raise ValidationError({"discount": "Discount should start from 0 to 99"})
 
     def save(self, *args, **kwargs):
@@ -83,6 +82,7 @@ class DayOfWeek(BaseModel):
 
     def __str__(self):
         return self.get_day_display()
+
 
 class Menu(BaseModel):
     name = models.CharField(max_length=120)
@@ -117,6 +117,8 @@ class RestaurantComment(BaseModel):
         Restaurant,
         on_delete=models.CASCADE,
         related_name="comments",
+        null=True,
+        blank=True,
     )
     like_count = models.PositiveIntegerField(default=0)
     dislike_count = models.PositiveIntegerField(default=0)
@@ -136,6 +138,11 @@ class RestaurantComment(BaseModel):
 
     def is_reply(self):
         return self.parent is not None
+
+    def save(self, *args, **kwargs):
+        if self.parent:
+            self.restaurant = self.parent.restaurant
+        super().save(*args, **kwargs)
 
 
 class FoodComment(BaseModel):
@@ -149,6 +156,8 @@ class FoodComment(BaseModel):
         Food,
         on_delete=models.CASCADE,
         related_name="comments",
+        null=True,
+        blank=True,
     )
     like_count = models.PositiveIntegerField(default=0)
     dislike_count = models.PositiveIntegerField(default=0)
@@ -168,3 +177,8 @@ class FoodComment(BaseModel):
 
     def is_reply(self):
         return self.parent is not None
+
+    def save(self, *args, **kwargs):
+        if self.parent:
+            self.restaurant = self.parent.restaurant
+        super().save(*args, **kwargs)
