@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
+        "rest_framework",
+    "rest_framework.authtoken",
+
     "allauth",
     "allauth.account",
 
@@ -153,3 +156,12 @@ LOGIN_URL = "/accounts/login/"
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+    ],
+}
+
+SITE_ID = 1
