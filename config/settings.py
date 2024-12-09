@@ -37,16 +37,18 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
-        "rest_framework",
-    "rest_framework.authtoken",
+    "drf_yasg",
 
+    "rest_framework",
+    "rest_framework.authtoken",
+    "dj_rest_auth",
     "allauth",
     "allauth.account",
+    "allauth.socialaccount",
 
     "common",
     "users",
     "restaurantDashboard",
-
     # 3erd party PKGs
     "crispy_forms",
     "crispy_bootstrap5",
@@ -151,6 +153,7 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 
 LOGIN_URL = "/accounts/login/"
 
@@ -160,8 +163,19 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.TokenAuthentication",  # Token-based auth
+        # "rest_framework.authentication.SessionAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
     ],
 }
 
 SITE_ID = 1
+
+REST_AUTH = {
+    "LOGIN_SERIALIZER": "users.serializers.CustomLoginSerializer",
+    "REGISTER_SERIALIZER": "users.serializers.CustomRegisterSerializer",
+}
+
+CSRF_TRUSTED_ORIGINS = ["chrome-extension://eejfoncpjfgmeleakejdcanedmefagga"]
