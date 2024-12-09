@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import UserProfile, CustomUser
+
+from .models import CustomUser, UserProfile
+
 
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
@@ -22,7 +24,7 @@ class CustomUserAdmin(UserAdmin):
 
 class UserProfileAdmin(admin.ModelAdmin):
     model = UserProfile
-    list_display = ("email","first_name", "last_name", "phone_number", "user") 
+    list_display = ("email","first_name", "last_name", "phone_number", "user")
     search_fields = ("first_name", "last_name", "email", "phone_number")
     list_filter = ("email",)
     fieldsets = (
