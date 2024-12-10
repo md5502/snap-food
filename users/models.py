@@ -28,7 +28,7 @@ class UserProfile(BaseModel):
     last_name = models.CharField(max_length=120)
     email = models.EmailField()
     phone_number = models.CharField(max_length=16)
-    profile_image = models.ImageField(default="uploads/profile_images/default.jpg", upload_to="uploads/profile_images")
+    profile_image = models.ImageField(default="profile_images/default.jpg", upload_to="profile_images")
 
     user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name="profile", on_delete=models.CASCADE)
 

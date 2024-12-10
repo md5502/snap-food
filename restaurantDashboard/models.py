@@ -15,7 +15,7 @@ class Restaurant(BaseModel):
         ("5", "very good"),
     )
     name = models.CharField(max_length=120)
-    logo = models.ImageField(default="uploads/restaurants/default.jpg", upload_to="uploads/restaurants")
+    logo = models.ImageField(default="restaurants/default.jpg", upload_to="restaurants")
     description = models.TextField(null=True, blank=True)
     owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="restaurants")
     address = models.CharField(max_length=1000)
@@ -49,7 +49,7 @@ class Food(BaseModel):
     )
 
     name = models.CharField(max_length=120)
-    image = models.ImageField(default="uploads/foods/default.jpg", upload_to="uploads/foods")
+    image = models.ImageField(default="foods/default.jpg", upload_to="foods")
     count = models.PositiveIntegerField()
     rate = models.CharField(max_length=1, choices=RATE_CHOSES, default=RATE_CHOSES[4][0])
     discount = models.PositiveIntegerField(default=0)
