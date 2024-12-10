@@ -16,7 +16,7 @@ class Restaurant(BaseModel):
     )
     name = models.CharField(max_length=120)
     logo = models.ImageField(default="restaurants/default.jpg", upload_to="restaurants")
-    description = models.TextField(null=True, blank=True)
+    description = models.TextField()
     owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="restaurants")
     address = models.CharField(max_length=1000)
     call_number = models.CharField(max_length=16)
@@ -49,6 +49,8 @@ class Food(BaseModel):
     )
 
     name = models.CharField(max_length=120)
+    description = models.TextField()
+
     image = models.ImageField(default="foods/default.jpg", upload_to="foods")
     count = models.PositiveIntegerField()
     rate = models.CharField(max_length=1, choices=RATE_CHOSES, default=RATE_CHOSES[4][0])
@@ -86,9 +88,9 @@ class DayOfWeek(BaseModel):
 
 class Menu(BaseModel):
     name = models.CharField(max_length=120)
-    description = models.TextField(null=True, blank=True)
+    description = models.TextField()
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name="menus")
-    foods = models.ManyToManyField(Food, related_name="menus")
+    foods = models.ManyToManyField(Food, related_name="menus", blank=True)
     available_from = models.TimeField()
     available_to = models.TimeField()
     is_active = models.BooleanField(default=True)
@@ -152,7 +154,7 @@ class FoodComment(BaseModel):
         related_name="food_comments",  # Unique related_name
     )
     text = models.TextField()
-    restaurant = models.ForeignKey(
+    food = models.ForeignKey(
         Food,
         on_delete=models.CASCADE,
         related_name="comments",
@@ -173,7 +175,7 @@ class FoodComment(BaseModel):
         ordering = ["-created_at"]
 
     def __str__(self):
-        return f"Comment by {self.user} on {self.restaurant}"
+        return f"Comment by {self.user} on {self.food}"
 
     def is_reply(self):
         return self.parent is not None

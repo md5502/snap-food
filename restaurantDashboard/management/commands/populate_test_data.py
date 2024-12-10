@@ -90,7 +90,7 @@ class Command(BaseCommand):
                 FoodComment.objects.create(
                     user=random.choice(users),
                     text=faker.text(),
-                    restaurant=food,
+                    food=food,
                     like_count=random.randint(0, 50),
                     dislike_count=random.randint(0, 20),
                 )

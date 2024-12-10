@@ -109,8 +109,8 @@ class RestaurantCommentAdmin(admin.ModelAdmin):
 
 
 class FoodCommentAdmin(admin.ModelAdmin):
-    list_display = ("user", "restaurant", "text", "like_count", "dislike_count", "parent", "created_at")
-    list_filter = ("restaurant", "user")
+    list_display = ("user", "food", "text", "like_count", "dislike_count", "parent", "created_at")
+    list_filter = ("food", "user")
     search_fields = ("text", "user__username", "restaurant__name")
     ordering = ("-created_at",)
     readonly_fields = ("like_count", "dislike_count")
