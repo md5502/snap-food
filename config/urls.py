@@ -1,3 +1,4 @@
+from allauth.account.views import ConfirmEmailView, EmailVerificationSentView
 from dj_rest_auth.views import PasswordResetConfirmView
 from django.contrib import admin
 from django.urls import include, path
@@ -28,9 +29,20 @@ urlpatterns = [
     path("restaurant-dashboard/", include("restaurantDashboard.urls")),
     path("api/auth/", include("dj_rest_auth.urls")),
     path(
+        "api/auth/registration/account-email-verification-sent/",
+        EmailVerificationSentView.as_view(),
+        name="account_email_verification_sent",
+    ),
+    path(
         "api/auth/password/reset/confirm/<str:uidb64>/<str:token>",
         PasswordResetConfirmView.as_view(),
         name="password_reset_confirm",
     ),
+    path(
+        "api/auth/registration/account-confirm-email/<str:key>/",
+        ConfirmEmailView.as_view(),
+        name="account_confirm_email",
+    ),
+
     path("api/auth/registration/", include("dj_rest_auth.registration.urls")),
 ]
