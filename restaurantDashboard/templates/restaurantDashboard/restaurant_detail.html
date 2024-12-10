@@ -30,7 +30,10 @@
                         <p class="card-text"><strong>Closing Time:</strong> {{ restaurant.time_to_close }}</p>
                         <a href="{% url 'restaurant_dashboard:menu_list' restaurant_id=restaurant.pk %}" class="btn btn-outline-primary btn-sm">Menus</a>
                         <a href="{% url 'restaurant_dashboard:food_list' restaurant_id=restaurant.pk %}" class="btn btn-outline-primary btn-sm">Foods</a>
-
+                        {% if request.user == restaurant.owner %}
+                            <a href="{% url 'restaurant_dashboard:update_restaurant' pk=restaurant.pk %}" class="btn btn-outline-primary btn-sm">Update</a>
+                            <a href="{% url 'restaurant_dashboard:delete_restaurant' pk=restaurant.pk %}" class="btn btn-outline-primary btn-sm">Delete</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
