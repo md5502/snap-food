@@ -1,5 +1,7 @@
 from allauth.account.views import ConfirmEmailView, EmailVerificationSentView
 from dj_rest_auth.views import PasswordResetConfirmView
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from drf_yasg import openapi
@@ -46,3 +48,4 @@ urlpatterns = [
 
     path("api/auth/registration/", include("dj_rest_auth.registration.urls")),
 ]
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
