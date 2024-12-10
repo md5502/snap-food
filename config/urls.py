@@ -29,6 +29,8 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),
     path("accounts/", include("users.urls")),
     path("restaurant-dashboard/", include("restaurantDashboard.urls")),
+    path("restaurant-dashboard/api/", include("restaurantDashboard.api.urls")),
+
     path("api/auth/", include("dj_rest_auth.urls")),
     path(
         "api/auth/registration/account-email-verification-sent/",
