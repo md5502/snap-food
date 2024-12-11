@@ -48,7 +48,9 @@ INSTALLED_APPS = [
 
     "common",
     "users",
-    "restaurantDashboard",
+    "restaurant",
+    "food",
+    "menu",
     # 3erd party PKGs
     "crispy_forms",
     "crispy_bootstrap5",

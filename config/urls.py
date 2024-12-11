@@ -25,13 +25,21 @@ urlpatterns = [
     path("swagger<format>/", schema_view.without_ui(cache_timeout=0), name="schema-json"),
     path("swagger/", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"),
     path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
+
     path("admin/", admin.site.urls),
+
     path("accounts/", include("allauth.urls")),
     path("accounts/", include("users.urls")),
-    path("restaurant-dashboard/", include("restaurantDashboard.urls")),
-    path("restaurant-dashboard/api/", include("restaurantDashboard.api.urls")),
+
+    path("restaurant-dashboard/", include("restaurant.urls")),
+    path("restaurant-dashboard/", include("food.urls")),
+    path("restaurant-dashboard/", include("menu.urls")),
+    path("restaurant-dashboard/api/", include("restaurant.api.urls")),
+    path("restaurant-dashboard/api/", include("food.api.urls")),
+    path("restaurant-dashboard/api/", include("menu.api.urls")),
 
     path("api/auth/", include("dj_rest_auth.urls")),
+
     path(
         "api/auth/registration/account-email-verification-sent/",
         EmailVerificationSentView.as_view(),
