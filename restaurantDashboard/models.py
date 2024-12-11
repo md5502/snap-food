@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
@@ -110,13 +111,13 @@ class Menu(BaseModel):
 
 class RestaurantComment(BaseModel):
     user = models.ForeignKey(
-        CustomUser,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="restaurant_comments",  # Unique related_name
+        related_name="restaurant_comments",
     )
     text = models.TextField()
     restaurant = models.ForeignKey(
-        Restaurant,
+        "Restaurant",
         on_delete=models.CASCADE,
         related_name="comments",
         null=True,
@@ -131,6 +132,7 @@ class RestaurantComment(BaseModel):
         blank=True,
         related_name="replies",
     )
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ["-created_at"]
@@ -138,24 +140,57 @@ class RestaurantComment(BaseModel):
     def __str__(self):
         return f"Comment by {self.user} on {self.restaurant}"
 
-    def is_reply(self):
-        return self.parent is not None
 
-    def save(self, *args, **kwargs):
-        if self.parent:
-            self.restaurant = self.parent.restaurant
-        super().save(*args, **kwargs)
+class RestaurantCommentLike(BaseModel):
+    """Store unique likes for each user on a comment.
+    Prevents multiple likes on the same comment by the same user.
+    """
+
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name="restaurant_comment_likes",
+    )
+    comment = models.ForeignKey(
+        RestaurantComment,
+        on_delete=models.CASCADE,
+        related_name="likes",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("user", "comment")  # Prevent multiple likes on the same comment by the same user
+
+class RestaurantCommentDislike(BaseModel):
+    """Store unique likes for each user on a comment.
+    Prevents multiple likes on the same comment by the same user.
+    """
+
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name="restaurant_comment_dislikes",
+    )
+    comment = models.ForeignKey(
+        RestaurantComment,
+        on_delete=models.CASCADE,
+        related_name="dislikes",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("user", "comment")  # Prevent multiple likes on the same comment by the same user
 
 
 class FoodComment(BaseModel):
     user = models.ForeignKey(
-        CustomUser,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="food_comments",  # Unique related_name
+        related_name="food_comments",
     )
     text = models.TextField()
     food = models.ForeignKey(
-        Food,
+        "Food",
         on_delete=models.CASCADE,
         related_name="comments",
         null=True,
@@ -170,6 +205,7 @@ class FoodComment(BaseModel):
         blank=True,
         related_name="replies",
     )
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ["-created_at"]
@@ -177,10 +213,43 @@ class FoodComment(BaseModel):
     def __str__(self):
         return f"Comment by {self.user} on {self.food}"
 
-    def is_reply(self):
-        return self.parent is not None
 
-    def save(self, *args, **kwargs):
-        if self.parent:
-            self.restaurant = self.parent.restaurant
-        super().save(*args, **kwargs)
+class FoodCommentLike(BaseModel):
+    """Store unique likes for each user on a comment.
+    Prevents multiple likes on the same comment by the same user.
+    """
+
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name="food_comment_likes",
+    )
+    comment = models.ForeignKey(
+        FoodComment,
+        on_delete=models.CASCADE,
+        related_name="likes",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("user", "comment")  # Prevent multiple likes on the same comment by the same user
+
+class FoodCommentDislike(BaseModel):
+    """Store unique likes for each user on a comment.
+    Prevents multiple likes on the same comment by the same user.
+    """
+
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name="food_comment_dislikes",
+    )
+    comment = models.ForeignKey(
+        FoodComment,
+        on_delete=models.CASCADE,
+        related_name="dislikes",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("user", "comment")  # Prevent multiple likes on the same comment by the same user

@@ -9,7 +9,7 @@ from django.views.generic import CreateView, DeleteView, DetailView, ListView, U
 
 from config.settings import LOGIN_URL
 from restaurantDashboard.forms import FoodCommentForm, FoodForm
-from restaurantDashboard.models import Food, FoodComment, Restaurant
+from restaurantDashboard.models import Food, FoodComment, FoodCommentDislike, FoodCommentLike, Restaurant
 
 
 class FoodListView(LoginRequiredMixin, ListView):
@@ -32,7 +32,7 @@ class FoodDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context["food_comment_form"] = FoodCommentForm()
         context["obj"] = self.get_object()
-        context["comments"] = FoodComment.objects.filter(restaurant=self.get_object()).select_related("user")
+        context["comments"] = FoodComment.objects.filter(food=self.get_object()).select_related("user")
 
         return context
 
@@ -111,7 +111,7 @@ class FoodCommentCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         food = get_object_or_404(Food, pk=self.kwargs.get("pk"))
         form.instance.user = self.request.user
-        form.instance.restaurant = food
+        form.instance.food = food
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -144,19 +144,34 @@ class FoodCommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView)
 @login_required(login_url=LOGIN_URL)
 def food_comment_like_view(request, comment_pk):
     comment = get_object_or_404(FoodComment, pk=comment_pk)
-    restaurant_pk = comment.restaurant.pk
+    food_pk = comment.food.pk
+    user = request.user
+    like_comment = FoodCommentLike.objects.filter(comment=comment).first()
+
+    if like_comment and user == like_comment.user:
+        messages.info(request, "you already like this comment ")
+        return redirect("restaurant_dashboard:food_detail", pk=food_pk)
+
+    FoodCommentLike.objects.create(user=user, comment=comment)
     comment.like_count += 1
     comment.save()
-    return redirect("restaurant_dashboard:food_detail", pk=restaurant_pk)
+    return redirect("restaurant_dashboard:food_detail", pk=food_pk)
 
 
 @login_required(login_url=LOGIN_URL)
 def food_comment_dislike_view(request, comment_pk):
     comment = get_object_or_404(FoodComment, pk=comment_pk)
-    restaurant_pk = comment.restaurant.pk
+    food_pk = comment.food.pk
+    user = request.user
+    dislike_comment = FoodCommentDislike.objects.filter(comment=comment).first()
+    if dislike_comment and user == dislike_comment.user:
+        messages.info(request, "you already dislike this comment ")
+        return redirect("restaurant_dashboard:food_detail", pk=food_pk)
+
+    FoodCommentDislike.objects.create(user=user, comment=comment)
     comment.dislike_count += 1
     comment.save()
-    return redirect("restaurant_dashboard:food_detail", pk=restaurant_pk)
+    return redirect("restaurant_dashboard:food_detail", pk=food_pk)
 
 
 
@@ -167,15 +182,15 @@ def food_comment_reply_view(request, parent_comment_pk):
         text_replay = request.POST.get("reply_text", "").strip()
         if not text_replay:
             messages.error(request, "Reply text cannot be empty.")
-            return redirect("restaurant_dashboard:detail_restaurant", pk=parent_comment.restaurant.pk)
+            return redirect("restaurant_dashboard:food_detail", pk=parent_comment.food.pk)
 
         FoodComment.objects.create(
             user=request.user,
             text=text_replay,
-            restaurant=parent_comment.restaurant,  # Parent's restaurant is used
+            food=parent_comment.food,  # Parent's restaurant is used
             parent=parent_comment,  # Set parent comment
         )
         messages.success(request, "Your reply has been added.")
-        return redirect("restaurant_dashboard:detail_restaurant", pk=parent_comment.restaurant.pk)
+        return redirect("restaurant_dashboard:food_detail", pk=parent_comment.food.pk)
     messages.error(request, "Invalid request method.")
-    return redirect("restaurant_dashboard:detail_restaurant", pk=parent_comment.restaurant.pk)
+    return redirect("restaurant_dashboard:food_detail", pk=parent_comment.food.pk)

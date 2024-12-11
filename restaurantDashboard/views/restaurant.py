@@ -9,7 +9,12 @@ from django.views.generic import CreateView, DeleteView, DetailView, ListView, U
 
 from config.settings import LOGIN_URL
 from restaurantDashboard.forms import RestaurantCommentForm, RestaurantForm
-from restaurantDashboard.models import Restaurant, RestaurantComment
+from restaurantDashboard.models import (
+    Restaurant,
+    RestaurantComment,
+    RestaurantCommentDislike,
+    RestaurantCommentLike,
+)
 
 
 class RestaurantListView(LoginRequiredMixin, ListView):
@@ -17,8 +22,7 @@ class RestaurantListView(LoginRequiredMixin, ListView):
     template_name = "restaurantDashboard/restaurant_list.html"
 
     def get_queryset(self):
-        restaurants = get_list_or_404(Restaurant, owner=self.request.user)
-        return restaurants
+        return Restaurant.objects.filter(owner=self.request.user)
 
 
 class RestaurantCreateView(LoginRequiredMixin, CreateView):
@@ -124,6 +128,13 @@ class RestaurantCommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, Delet
 def restaurant_comment_like_view(request, comment_pk):
     comment = get_object_or_404(RestaurantComment, pk=comment_pk)
     restaurant_pk = comment.restaurant.pk
+    user = request.user
+    like_comment = RestaurantCommentLike.objects.filter(comment=comment)
+    if like_comment and user == like_comment.user:
+        messages.info(request, "you already like this comment ")
+        return redirect("restaurant_dashboard:detail_restaurant", pk=restaurant_pk)
+
+    RestaurantCommentLike.objects.create(user=user, comment=comment)
     comment.like_count += 1
     comment.save()
     return redirect("restaurant_dashboard:detail_restaurant", pk=restaurant_pk)
@@ -133,6 +144,13 @@ def restaurant_comment_like_view(request, comment_pk):
 def restaurant_comment_dislike_view(request, comment_pk):
     comment = get_object_or_404(RestaurantComment, pk=comment_pk)
     restaurant_pk = comment.restaurant.pk
+    user = request.user
+    dislike_comment = RestaurantCommentDislike.objects.filter(comment=comment)
+    if dislike_comment and user == dislike_comment.user:
+        messages.info(request, "you already dislike this comment ")
+        return redirect("restaurant_dashboard:detail_restaurant", pk=restaurant_pk)
+
+    RestaurantCommentDislike.objects.create(user=user, comment=comment)
     comment.dislike_count += 1
     comment.save()
     return redirect("restaurant_dashboard:detail_restaurant", pk=restaurant_pk)
