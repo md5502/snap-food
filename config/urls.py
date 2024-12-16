@@ -34,9 +34,9 @@ urlpatterns = [
     path("restaurant-dashboard/", include("restaurant.urls")),
     path("restaurant-dashboard/", include("food.urls")),
     path("restaurant-dashboard/", include("menu.urls")),
-    path("restaurant-dashboard/api/", include("restaurant.api.urls")),
-    path("restaurant-dashboard/api/", include("food.api.urls")),
-    path("restaurant-dashboard/api/", include("menu.api.urls")),
+    path("api/restaurant-dashboard/", include("restaurant.api.urls")),
+    path("api/restaurant-dashboard/", include("food.api.urls")),
+    path("api/restaurant-dashboard/", include("menu.api.urls")),
 
     path("api/auth/", include("dj_rest_auth.urls")),
 

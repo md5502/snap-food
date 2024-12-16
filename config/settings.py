@@ -36,16 +36,14 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
     "drf_yasg",
-
     "rest_framework",
     "rest_framework.authtoken",
     "dj_rest_auth",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
-
+    # local  apps
     "common",
     "users",
     "restaurant",
@@ -136,7 +134,9 @@ USE_TZ = True
 STATIC_URL = "static/"
 
 MEDIA_URL = "/uploads/"
-MEDIA_ROOT = BASE_DIR /"uploads"
+MEDIA_ROOT = BASE_DIR / "uploads"
+
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
