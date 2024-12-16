@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     # local  apps
     "common",
+    "comment",
     "users",
     "restaurant",
     "food",

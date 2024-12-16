@@ -31,6 +31,8 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),
     path("accounts/", include("users.urls")),
 
+    path("comments/", include("comment.urls")),
+
     path("restaurant-dashboard/", include("restaurant.urls")),
     path("restaurant-dashboard/", include("food.urls")),
     path("restaurant-dashboard/", include("menu.urls")),

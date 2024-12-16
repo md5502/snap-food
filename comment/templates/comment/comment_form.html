@@ -1,0 +1,14 @@
+{% load crispy_forms_tags %}
+
+
+<form method="post" action="{% url 'comment:add_comment' app_label model_name object_id %}" class="container mt-4">
+    {% csrf_token %}
+    
+    <div class="mb-3">
+        {{ form|crispy }}
+    </div>
+    
+    <div class="d-flex justify-content-between align-items-center">
+        <button type="submit" class="btn btn-primary">Add Comment</button>
+    </div>
+</form>
