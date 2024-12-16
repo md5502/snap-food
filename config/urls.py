@@ -38,6 +38,8 @@ urlpatterns = [
     path("api/restaurant-dashboard/", include("food.api.urls")),
     path("api/restaurant-dashboard/", include("menu.api.urls")),
 
+    path("comments/", include("comment.urls")),
+
     path("api/auth/", include("dj_rest_auth.urls")),
 
     path(
