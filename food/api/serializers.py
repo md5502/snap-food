@@ -1,41 +1,6 @@
 from rest_framework import serializers
 
-from food.models import Food, FoodComment
-
-
-class FoodCommentGetSerializer(serializers.ModelSerializer):
-    email = serializers.CharField(source="user.email")
-
-    class Meta:
-        model = FoodComment
-        fields = [
-            "email",
-            "text",
-            "like_count",
-            "dislike_count",
-            "parent",
-            "created_at",
-            "updated_at",
-            "pk",
-        ]
-
-
-class FoodCommentPostSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = FoodComment
-        fields = [
-            "text",
-            "user",
-            "food",
-        ]
-
-
-class FoodCommentUpdateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = FoodComment
-        fields = [
-            "text",
-        ]
+from food.models import Food
 
 
 class FoodListSerializer(serializers.ModelSerializer):
@@ -50,7 +15,6 @@ class FoodListSerializer(serializers.ModelSerializer):
 
 
 class FoodDetailSerializer(serializers.ModelSerializer):
-    comments = FoodCommentGetSerializer(many=True)
 
     class Meta:
         model = Food
@@ -62,7 +26,6 @@ class FoodDetailSerializer(serializers.ModelSerializer):
             "rate",
             "discount",
             "price",
-            "comments",
             "pk",
             "created_at",
             "updated_at",

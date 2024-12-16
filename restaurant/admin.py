@@ -1,13 +1,6 @@
 from django.contrib import admin
 
-from .models import Restaurant, RestaurantComment
-
-
-class RestaurantCommentInline(admin.TabularInline):
-    model = RestaurantComment
-    extra = 1
-    fields = ("user", "text", "like_count", "dislike_count", "parent")
-    readonly_fields = ("like_count", "dislike_count")
+from .models import Restaurant
 
 
 class RestaurantAdmin(admin.ModelAdmin):
@@ -15,7 +8,6 @@ class RestaurantAdmin(admin.ModelAdmin):
     list_filter = ("rate",)
     search_fields = ("name", "owner__username", "address")
     ordering = ("name",)
-    inlines = [RestaurantCommentInline]
 
     fieldsets = (
         (
@@ -40,6 +32,7 @@ class RestaurantAdmin(admin.ModelAdmin):
         ),
     )
 
+
 class RestaurantCommentAdmin(admin.ModelAdmin):
     list_display = ("user", "restaurant", "text", "like_count", "dislike_count", "parent", "created_at")
     list_filter = ("restaurant", "user")
@@ -47,5 +40,5 @@ class RestaurantCommentAdmin(admin.ModelAdmin):
     ordering = ("-created_at",)
     readonly_fields = ("like_count", "dislike_count")
 
-admin.site.register(RestaurantComment, RestaurantCommentAdmin)
+
 admin.site.register(Restaurant, RestaurantAdmin)

@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Food, FoodComment
+from .models import Food
 
 
 class FoodForm(forms.ModelForm):
@@ -15,7 +15,3 @@ class FoodForm(forms.ModelForm):
         ]
 
 
-class FoodCommentForm(forms.ModelForm):
-    class Meta:
-        model = FoodComment
-        fields = ["text"]

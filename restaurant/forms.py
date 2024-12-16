@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Restaurant, RestaurantComment
+from .models import Restaurant
 
 
 class RestaurantForm(forms.ModelForm):
@@ -24,9 +24,3 @@ class RestaurantForm(forms.ModelForm):
             "time_to_open",
             "time_to_close",
         ]
-
-class RestaurantCommentForm(forms.ModelForm):
-    class Meta:
-        model = RestaurantComment
-        fields = ["text"]
-
