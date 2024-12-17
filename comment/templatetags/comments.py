@@ -7,13 +7,26 @@ from comment.models import Comment
 register = template.Library()
 
 
-@register.inclusion_tag("comment/list_comment.html")
-def list_comments(obj):
+@register.inclusion_tag("comment/list_comments_admin.html")
+def list_comments_admin(obj):
     content_type = ContentType.objects.get_for_model(obj)
     comments = Comment.objects.filter(content_type=content_type, object_id=obj.id).order_by("-created_at")
-
+    comment_list = []
+    for comment in comments:
+        reactions = comment.reactions
+        like_count = reactions.filter(reaction_type="like").count()
+        dislike_count = reactions.filter(reaction_type="dislike").count()
+        object = {}
+        object["content"] = comment.content
+        object["user"] = comment.user
+        object["created_at"] = comment.created_at
+        object["like_count"] = like_count
+        object["dislike_count"] = dislike_count
+        object["object_id"] = comment.object_id
+        object["id"] = comment.pk
+        comment_list.append(object)
     return {
-        "comments": comments,
+        "comments": comment_list,
         "model_name": obj._meta.model_name,
         "app_label": obj._meta.app_label,
     }

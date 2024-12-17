@@ -1,7 +1,7 @@
-
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
 from django.db import models
 
 
@@ -15,7 +15,6 @@ class Comment(models.Model):
         on_delete=models.CASCADE,
         related_name="comments",
     )
-    like_count = models.IntegerField(default=0)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -31,8 +30,19 @@ class Comment(models.Model):
     def __str__(self):
         return f"{self.user.email}: {self.content[:20]}..."
 
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
+
     def is_reply(self):
         return bool(self.parent)
+
+    def clean(self):
+        if self.parent and self.parent.content_type != self.content_object:
+            raise ValidationError(
+                "Parent comment must have the same content type as this comment.",
+            )
+        return super().clean()
 
 
 class Reaction(models.Model):

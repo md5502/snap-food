@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import add_comment, add_reaction, delete_comment, update_comment
+from .views import add_comment, add_reaction, delete_comment
 
 app_name = "comment"
 
@@ -15,11 +15,6 @@ urlpatterns = [
         "add/<str:app_label>/<str:model_name>/<uuid:object_id>/<int:parent_id>/",
         add_comment,
         name="add_reply",
-    ),
-    path(
-        "update/<int:comment_id>/",
-        update_comment,
-        name="update_comment",
     ),
     path(
         "delete/<int:comment_id>/",
