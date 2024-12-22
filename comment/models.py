@@ -31,18 +31,11 @@ class Comment(models.Model):
         return f"{self.user.email}: {self.content[:20]}..."
 
     def save(self, *args, **kwargs):
-        self.clean()
         super().save(*args, **kwargs)
 
     def is_reply(self):
         return bool(self.parent)
 
-    def clean(self):
-        if self.parent and self.parent.content_type != self.content_object:
-            raise ValidationError(
-                "Parent comment must have the same content type as this comment.",
-            )
-        return super().clean()
 
 
 class Reaction(models.Model):
