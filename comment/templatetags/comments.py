@@ -8,7 +8,7 @@ register = template.Library()
 
 
 @register.inclusion_tag("comment/list_comments_admin.html")
-def list_comments_admin(obj):
+def list_comments_admin(obj, request):
     content_type = ContentType.objects.get_for_model(obj)
     comments = Comment.objects.filter(content_type=content_type, object_id=obj.id).order_by("-created_at")
     comment_list = []
@@ -26,6 +26,7 @@ def list_comments_admin(obj):
         object["id"] = comment.pk
         comment_list.append(object)
     return {
+        "request": request,
         "comments": comment_list,
         "model_name": obj._meta.model_name,
         "app_label": obj._meta.app_label,
