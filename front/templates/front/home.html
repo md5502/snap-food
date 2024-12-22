@@ -1,0 +1,38 @@
+{% extends "front_base.html" %}
+
+{% block content %}
+<div class="container text-center">
+    <h1 class="my-4">Welcome to Our Restaurant Platform</h1>
+    <p class="lead">Discover the best restaurants around you. Check their ratings, browse menus, and place your orders with ease!</p>
+
+    <div class="row mt-5">
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Explore Restaurants</h5>
+                    <p class="card-text">Find amazing places to dine and explore their details, including their menus and reviews.</p>
+                    <a href="{% url 'front:list_restaurant' %}" class="btn btn-primary">View Restaurants</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Register Your Restaurant</h5>
+                    <p class="card-text">Own a restaurant? Register it with us to reach more customers and grow your business.</p>
+                    {% comment %} <a href="{% url 'register_restaurant' %}" class="btn btn-primary">Register Now</a> {% endcomment %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Customer Profile</h5>
+                    <p class="card-text">Access your profile to manage your orders, reviews, and saved restaurants.</p>
+                    {% comment %} <a href="{% url 'profile' %}" class="btn btn-primary">Go to Profile</a> {% endcomment %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

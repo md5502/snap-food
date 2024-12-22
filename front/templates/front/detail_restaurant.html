@@ -1,0 +1,77 @@
+{% extends "front_base.html" %}
+{% load comments %}
+
+{% block content %}
+<div class="container my-4">
+    <!-- Restaurant Details -->
+     <div class="row">
+        <div class="col-md-6 my-auto">
+            <h2 class="card-title">{{restaurant.name}}</h2>
+            <img src="{{restaurant.logo.url}}" alt="Restaurant Logo" class="img-fluid mb-3" style="max-height: 200px;">
+            <p>{{restaurant.description}}</p>
+            <p><strong>Address:</strong> {{restaurant.address}}</p>
+            <p><strong>Call Number:</strong> {{restaurant.call_number}}</p>
+            <p><strong>Rating:</strong>{{restaurant.rate}}</p>
+            <p><strong>Opening Hours:</strong> {{ restaurant.time_to_open }}-{{ restaurant.time_to_close }}</p>
+        </div>
+        <div class="col-md-6">
+            {% comment_form restaurant request.user %}
+
+        </div>
+        
+     </div>
+    
+
+    {% list_comments_admin restaurant request %}
+
+    <!-- Menus -->
+    <h3>Menus</h3>
+    <div class="accordion" id="menuAccordion">
+        {% for menu in restaurant.menus.all %}
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="false" aria-controls="collapse{{ forloop.counter }}">
+                    {{ menu.name }}
+                </button>
+            </h2>
+            <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#menuAccordion">
+                <div class="accordion-body">
+                    <p>{{ menu.description }}</p>
+                    <p><strong>Available From:</strong> {{ menu.available_from }}</p>
+                    <p><strong>Available To:</strong> {{ menu.available_to }}</p>
+                    <p><strong>Available Days:</strong>
+                        {% for day in menu.available_days.all %} {{ day.day }} {% endfor %}
+                    </p>
+                    <p><strong>Status:</strong> {{ menu.is_active|yesno:"Active,Inactive" }}</p>
+
+                    <!-- Foods in Menu -->
+                    <button class="btn btn-secondary mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#foods{{ forloop.counter }}" aria-expanded="false" aria-controls="foods{{ forloop.counter }}">
+                        Show Foods
+                    </button>
+                    <div class="collapse mt-3" id="foods{{ forloop.counter }}">
+                        <div class="row">
+                            {% for food in menu.foods.all %}
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100">
+                                    <img src="{{ food.image.url }}" class="card-img-top" alt="{{ food.name }}">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ food.name }}</h5>
+                                        <p class="card-text">{{ food.description }}</p>
+                                        <p><strong>Price:</strong> {{ food.price }}</p>
+                                        <p><strong>Discount:</strong> {{ food.discount }}%</p>
+                                        <p><strong>Rating:</strong> {{ food.rate }}</p>
+                                        <p><strong>Available Count:</strong> {{ food.count }}</p>
+                                        <a href="{% url 'cart:add_to_cart' food.pk %}" class="btn btn-primary btn-sm">Add to Cart</a>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
