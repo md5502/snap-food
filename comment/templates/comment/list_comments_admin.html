@@ -23,6 +23,9 @@
                             <div class="d-flex justify-content-between">
                                 <a href="#" style="height: 33px;" class="btn btn-outline-primary btn-sm" onclick="toggleReplyForm('reply-form-{{ comment.id }}')">Reply</a>
                                 <div>
+                                    {% if comment.user == request.user %}
+                                    <a class="btn btn-danger btn-sm" href="{% url 'comment:delete_comment' comment.id %}">delete comment</a>
+                                    {% endif %}
                                     <span style="display:block;"  class="text-muted small">Likes: {{ comment.like_count }}</span>
                                     <span  style="display:block;" class="text-muted small">Dislikes: {{ comment.dislike_count }}</span>
                                     <a class="btn btn-success btn-sm" href="{% url 'comment:add_reaction' comment.id 'like' %}">Like</a>
