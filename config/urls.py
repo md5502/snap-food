@@ -26,12 +26,15 @@ urlpatterns = [
     path("swagger/", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"),
     path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
 
+    path("", include("front.urls")),
+
     path("admin/", admin.site.urls),
 
     path("accounts/", include("allauth.urls")),
     path("accounts/", include("users.urls")),
 
     path("comments/", include("comment.urls")),
+    path("cart/", include("cart.urls")),
 
     path("restaurant-dashboard/", include("restaurant.urls")),
     path("restaurant-dashboard/", include("food.urls")),

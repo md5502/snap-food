@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "menu",
     "orders",
     "cart",
+    "front",
     # 3erd party PKGs
     "crispy_forms",
     "crispy_bootstrap5",
