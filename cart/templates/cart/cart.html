@@ -23,9 +23,19 @@
                 <td>${{ item.price }}</td>
                 <td>${{ item.total|floatformat:2 }}</td>
                 <td>
-                    <a href="{% url 'cart:add_to_cart' item.pk %}" class="btn btn-sm btn-success">+</a>
-                    <a href="{% url 'cart:decrease_quantity' item.pk %}" class="btn btn-sm btn-warning">-</a>
-                    <a href="{% url 'cart:remove_from_cart' item.pk %}" class="btn btn-sm btn-danger">Remove</a>
+                    <form class="display:inline;" action="{% url 'cart:add_to_cart' item.pk %}" method="POST">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-success">+</button>
+                    </form>
+                    <form class="display:inline;" action="{% url 'cart:decrease_quantity' item.pk %}" method="POST">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-warning">-</button>
+                    </form>
+                    <form class="display:inline;" action="{% url 'cart:remove_from_cart' item.pk %}" method="POST">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-danger">remove</button>
+                    </form>
+
                 </td>
             </tr>
             {% endfor %}
@@ -34,7 +44,7 @@
     </table>
     <div class="text-end">
         <h4>Total: ${{ total_price|floatformat:2 }}</h4>
-        <a href="#" class="btn btn-primary">Checkout</a>
+        <a href="{% url 'cart:checkout' %}" class="btn btn-primary">Checkout</a>
         <a href="{% url 'cart:clear_cart' %}" class="btn btn-danger">Clear Cart</a>
     </div>
     {% else %}

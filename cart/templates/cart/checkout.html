@@ -1,0 +1,52 @@
+{% extends "front_base.html" %}
+{% block title %}
+    Checkout
+{% endblock title %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Checkout</h1>
+
+    <!-- Address Selection -->
+    <form method="POST" action="{% url 'cart:checkout' %}">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="address" class="form-label">Select an Address:</label>
+            <select class="form-select" id="address" name="address" required>
+                {% for address in user.addresses.all %}
+                    <option value="{{ address.pk }}">{{ address.title }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Cart Items -->
+        <h2 class="mt-4">Your Cart</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Food Item</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Total Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart.values %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>${{ item.price }}</td>
+                        <td>${{item.total }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center">Your cart is empty.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <h4>Total: ${{ total_price|floatformat:2 }}</h4>
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary mt-3">Place Order</button>
+    </form>
+{% endblock content %}
