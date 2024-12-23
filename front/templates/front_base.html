@@ -5,28 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Restaurant Site</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        #flash-messages .toast {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1055;
+            opacity: 0.95;
+        }
+    </style>
 </head>
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <a class="navbar-brand" href="#">Restaurant</a>
+            <a class="navbar-brand" href="{% url 'front:home' %}">Restaurant</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Home</a>
+                        <a class="nav-link" href="{% url 'front:home' %}">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'front:list_restaurant' %}">Restaurants</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">About Us</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Contact</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav ms-auto">
@@ -35,7 +38,7 @@
                         <a class="nav-link position-relative" href="{% url 'cart:view_cart' %}">
                             Cart
                             <span class="badge rounded-pill bg-danger">
-                                {{request.session.cart|length}}
+                                {{ request.session.cart|length }}
                             </span>
                         </a>
                     </li>
@@ -54,7 +57,22 @@
             </div>
         </div>
     </nav>
-    
+
+    <!-- Flash Messages -->
+    <div id="flash-messages">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="toast align-items-center text-bg-{{ message.tags }} border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="3000">
+            <div class="d-flex">
+                <div class="toast-body">
+                    {{ message }}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
 
     <!-- Main Content -->
     <div class="container my-4">
@@ -68,5 +86,14 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const toastElList = [].slice.call(document.querySelectorAll('.toast'));
+            toastElList.forEach(function (toastEl) {
+                const toast = new bootstrap.Toast(toastEl);
+                toast.show();
+            });
+        });
+    </script>
 </body>
 </html>

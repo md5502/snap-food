@@ -61,7 +61,10 @@
                                         <p><strong>Discount:</strong> {{ food.discount }}%</p>
                                         <p><strong>Rating:</strong> {{ food.rate }}</p>
                                         <p><strong>Available Count:</strong> {{ food.count }}</p>
-                                        <a href="{% url 'cart:add_to_cart' food.pk %}" class="btn btn-primary btn-sm">Add to Cart</a>
+                                        <form class="display:inline;" action="{% url 'cart:add_to_cart' food.pk %}" method="POST">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-sm btn-success">Add to Cart</button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
