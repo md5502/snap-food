@@ -1,7 +1,25 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import CustomUser, UserProfile
+from .models import Address, CustomUser, UserProfile
+
+
+class AddressAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "user",
+        "title",
+        "full_name",
+        "city",
+        "state",
+        "postal_code",
+        "is_default",
+    )
+    list_filter = ("is_default", "country", "state")
+    search_fields = ("full_name", "city", "state", "postal_code", "user__email")
+    list_editable = ("is_default",)
+    ordering = ("-is_default", "user")
+
 
 
 class CustomUserAdmin(UserAdmin):
@@ -34,4 +52,5 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 
 admin.site.register(UserProfile, UserProfileAdmin)
+admin.site.register(Address, AddressAdmin)
 admin.site.register(CustomUser, CustomUserAdmin)

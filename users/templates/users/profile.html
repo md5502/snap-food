@@ -1,24 +1,116 @@
 {% extends "users_base.html" %}
-{% load static %}
+
 {% block content %}
-<div class="container mt-5">
+<div class="container my-4">
+    <h2 class="mb-4">User Profile</h2>
+
+    <!-- User Information -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h3 class="card-title">User Information</h3>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Full Name:</strong> {{ user.profile.first_name }} {{ user.profile.last_name }}</p>
+
+            <!-- User Addresses -->
+            <h4 class="mt-4">Addresses</h4>
+            {% if user.addresses.exists %}
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Full Name</th>
+                        <th>Street</th>
+                        <th>City</th>
+                        <th>State</th>
+                        <th>Postal Code</th>
+                        <th>Country</th>
+                        <th>Phone</th>
+                        <th>Default</th>
+                        <th>edit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for address in user.addresses.all %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ address.title }}</td>
+                        <td>{{ address.full_name }}</td>
+                        <td>{{ address.street }}</td>
+                        <td>{{ address.city }}</td>
+                        <td>{{ address.state }}</td>
+                        <td>{{ address.postal_code }}</td>
+                        <td>{{ address.country }}</td>
+                        <td>{{ address.phone_number }}</td>
+                        <td>
+                            {% if address.is_default %}
+                            <span class="badge bg-success">Yes</span>
+                            {% else %}
+                            <span class="badge bg-secondary">No</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'users:update_address' address.pk %}" class="btn btn-success mt-3">update</a>
+                            <a href="{% url 'users:delete_address' address.pk %}" class="btn btn-danger mt-3">delete</a>
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {% else %}
+            <p class="text-muted">You haven't added any addresses yet.</p>
+            {% endif %}
+            <a href="{% url 'users:create_address' %}" class="btn btn-primary mt-3">Add an Address</a>
+            <a href="{% url 'users:edit_profile' %}" class="btn btn-primary mt-3">Edit Profile</a>
+        </div>
+    </div>
+
+    <!-- User's Restaurants -->
+    {% if user.restaurants.exists %}
+    <div class="card mb-4">
+        <div class="card-body">
+            <h3 class="card-title">Your Restaurants</h3>
+            <div class="row">
+                {% for restaurant in user.restaurants.all %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <img src="{{ restaurant.logo.url }}" class="card-img-top" alt="{{ restaurant.name }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ restaurant.name }}</h5>
+                            <p>{{ restaurant.description|truncatewords:20 }}</p>
+                            <a href="{% url 'restaurant:detail_restaurant' restaurant.pk %}" class="btn btn-secondary btn-sm">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        You haven't registered any restaurants yet. <a href="{% url 'restaurant:create_restaurant' %}">Register a restaurant</a>
+    </div>
+    {% endif %}
+
+    <!-- User's Comments -->
     <div class="card">
         <div class="card-body">
-            <div class="row">
-                <div class="col-md-3 text-center">
-                    {% if profile.profile_image %}
-                        <img src="{{ profile.profile_image.url }}" alt="Profile Image" class="rounded-circle img-thumbnail" width="150px" height="150px">
-                    {% else %}
-                        <img src="{% static 'uploads/profile_images/default.jpg' %}" alt="Default Profile Image" class="rounded-circle img-thumbnail" width="150">
-                    {% endif %}
-                </div>
-                <div class="col-md-9">
-                    <h3>{{ profile.first_name }} {{ profile.last_name }}</h3>
-                    <p><strong>Email:</strong> {{ profile.email }}</p>
-                    <p><strong>Phone Number:</strong> {{ profile.phone_number }}</p>
-                    <a href="{% url 'users:edit_profile' %}" class="btn btn-primary">Edit Profile</a>
-                </div>
-            </div>
+            <h3 class="card-title">Your Comments</h3>
+            {% if user.comments.exists %}
+            <ul class="list-unstyled">
+                {% for comment in user.comments.all %}
+                <li class="mb-3">
+                    <strong>On:</strong> <a href="{% url 'restaurant_detail' comment.restaurant.id %}">{{ comment.restaurant.name }}</a><br>
+                    <strong>Comment:</strong> {{ comment.text }}<br>
+                    <small class="text-muted">{{ comment.created_at|date:"M d, Y H:i" }}</small>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="text-muted">You haven't posted any comments yet.</p>
+            {% endif %}
         </div>
     </div>
 </div>
