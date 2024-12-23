@@ -5,7 +5,7 @@ from django.db import models
 
 from common.models import BaseModel
 from food.models import Food
-from users.models import CustomUser
+from users.models import Address, CustomUser
 
 
 def generate_tracking_code():
@@ -27,7 +27,7 @@ class Order(BaseModel):
     track_number = models.CharField(max_length=20, unique=True, default=generate_tracking_code, null=True, blank=True)
     status = models.CharField(max_length=20, choices=OrderStatus.choices, default=OrderStatus.PENDING)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    shipping_address = models.TextField()
+    shipping_address = models.ForeignKey(Address, on_delete=models.PROTECT)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -55,7 +55,7 @@ class OrderItem(BaseModel):
     product = models.ForeignKey(Food, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
     unit_price = models.DecimalField(max_digits=10, decimal_places=2)
-    total_price = models.DecimalField(max_digits=10, decimal_places=2, editable=False)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2, editable=False, null=True, blank=True)
 
     def save(self, *args, **kwargs):
         self.total_price = self.quantity * self.unit_price
