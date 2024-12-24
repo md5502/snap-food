@@ -34,6 +34,18 @@
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     {% if request.user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'users:user_profile' %}">Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'account_logout' %}">Logout</a>
+                        </li>
+                    {% else %}
+                    
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'account_login' %}">Login</a>
+                        </li>
+                    {% endif %}
                     <li class="nav-item">
                         <a class="nav-link position-relative" href="{% url 'cart:view_cart' %}">
                             Cart
@@ -42,17 +54,6 @@
                             </span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'users:user_profile' %}">Profile</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'account_logout' %}">Logout</a>
-                    </li>
-                    {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'account_login' %}">Login</a>
-                    </li>
-                    {% endif %}
                 </ul>
             </div>
         </div>

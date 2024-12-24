@@ -1,4 +1,6 @@
+from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
@@ -93,7 +95,7 @@ def clear_cart(request):
     return render(request, "cart/cart.html", {"cart": {}, "total_price": 0})
 
 
-
+@login_required(login_url=settings.LOGIN_URL)
 def checkout(request):
     cart = request.session.get("cart", {})
     if cart == {}:
